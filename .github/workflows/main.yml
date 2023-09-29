@@ -1,1 +1,33 @@
 on: [push]
+
+- name: Trigger Mobile Builds with Appflow
+  # You may pin to the exact commit or the version.
+  # uses: ionic-team/appflow-build@71a31db2d31237f18473cb3235fa7c27302136dc
+  uses: ionic-team/appflow-build@v1
+  with:
+    # A token used to authenticate with the Appflow Service.
+    token: 
+    # The Appflow App ID to trigger the build for.
+    app-id: 
+    # The platform to build for (Web, iOS, Android)
+    platform: # default is Web
+    # The type of build to perform. iOS - (ad-hoc, app-store, development, enterprise) Android - (debug, release)
+    build-type: # optional
+    # The build stack to use for the build (macOS - 2020.06, Linux - 2020.06, etc.)
+    build-stack: # optional
+    # The name of the signing certificate to use for the build.
+    certificate: # optional
+    # The name of the environment to use for the build.
+    environment: # optional
+    # The name of the native config to use for the build.
+    native-config: # optional
+    # A comma seperated list of destination names to trigger a deployment to on successful completion of build.
+    destinations: # optional
+    # If the platform is Web set this to [yes|no] to control whether a web preview is created for the build.
+    web-preview: # optional, default is no
+    # The filename to use for the IPA/APK (iOS, Android) defaults to {{workflow_name}}-{{run_id}}.[apk|ipa]
+    filename: # optional
+    # If this is set if any artifacts are created (APK/IPA) they will be uploaded as the name that is specified
+    upload-artifact: # optional
+    # Set this to determine the number of days to retain the uploaded artifact [1-90](defaults to 90).
+    artifact-retention-days: # optional, default is 90
