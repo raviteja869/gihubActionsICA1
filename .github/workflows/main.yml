@@ -1,15 +1,14 @@
 on: [push]
 
-
 jobs:
   build_test_deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
       - name: Set PYTHONPATH
         run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
-
       
       - name: Configure Python environment
         uses: actions/setup-python@v2
@@ -33,6 +32,9 @@ jobs:
       - name: Generate test coverage report
         run: |
           pytest --cov=my_module --cov-report=xml
+
+      - name: List directory contents
+        run: ls -al
 
       - name: Send coverage report to Codecov
         uses: codecov/codecov-action@v2
