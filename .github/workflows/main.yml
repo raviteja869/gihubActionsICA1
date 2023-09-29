@@ -51,9 +51,10 @@ jobs:
 
       - name: Update AWS Lambda with new package
         run: |
+          aws configure set default.region us-west-1
           aws lambda update-function-code \
             --function-name my-function \
-            --zip-file fileb://my-function.zip
+            --zip-file fileb://my-function.zip \
             --region us-west-1
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
