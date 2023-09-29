@@ -1,11 +1,15 @@
 on: [push]
 
+
 jobs:
   build_test_deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
+
       
       - name: Configure Python environment
         uses: actions/setup-python@v2
