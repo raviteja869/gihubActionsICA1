@@ -36,12 +36,6 @@ jobs:
       - name: List directory contents
         run: ls -al
 
-      - name: Send coverage report to Codecov
-        uses: codecov/codecov-action@v2
-        with:
-          file: ./coverage.xml
-          fail_ci_if_error: true
-
       - name: Archive test results
         run: pytest --junitxml=test_results.xml
 
