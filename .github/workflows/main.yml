@@ -55,11 +55,11 @@ jobs:
           aws lambda update-function-code \
             --function-name my-function \
             --zip-file fileb://my-function.zip \
-            --region us-west-1
+            --region us-west-2
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'us-west-1'
+          AWS_REGION: 'us-west-2'
 
       - name: Archive build logs
         uses: actions/upload-artifact@v2
