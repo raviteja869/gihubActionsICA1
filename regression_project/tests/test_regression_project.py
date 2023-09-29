@@ -6,6 +6,7 @@ from src.model import create_regression_model
 from src.train import train_regression_model
 from src.predict import predict_regression
 
+
 @pytest.fixture
 def regression_data():
     X_train, y_train = generate_regression_data()
