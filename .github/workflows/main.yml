@@ -45,7 +45,7 @@ jobs:
       - name: Prepare Lambda package
         run: |
           pip install -r requirements.txt -t ./package
-          cp -r ./* ./package/
+          rsync -av --progress ./ ./package/ --exclude package
           cd package
           zip -r ../my-function.zip .
 
