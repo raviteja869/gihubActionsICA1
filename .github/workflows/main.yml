@@ -1,55 +1,55 @@
 on: [push]
 
 jobs:
-  build_and_deploy:
+  build_test_deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v2
       
-    - name: Set up Python
+    - name: Configure Python environment
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
       
-    - name: Install dependencies
+    - name: Install project dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
       
-    - name: Build project (if necessary)
+    - name: Execute build process (if applicable)
       run: python setup.py build
       
-    - name: Store build logs
+    - name: Save build logs
       run: echo "Build logs" > build.log
 
-    - name: Run tests
+    - name: Execute tests
       run: pytest
 
-    - name: Run tests with coverage
+    - name: Generate test coverage report
       run: |
         pytest --cov=my_module --cov-report=xml
 
-    - name: Upload coverage to Codecov
+    - name: Send coverage report to Codecov
       uses: codecov/codecov-action@v2
       with:
         file: ./coverage.xml
         fail_ci_if_error: true
 
-    - name: Store test results
+    - name: Archive test results
       run: pytest --junitxml=test_results.xml
 
-    - name: Set up AWS CLI
+    - name: Install AWS Command Line Interface
       run: pip install awscli
 
-    - name: Package code for Lambda
+    - name: Prepare Lambda package
       run: |
         pip install -r requirements.txt -t ./package
         cp -r ./* ./package/
         cd package
         zip -r ../my-function.zip .
 
-    - name: Deploy to AWS Lambda
+    - name: Update AWS Lambda with new package
       run: |
         aws lambda update-function-code \
           --function-name my-function \
@@ -57,4 +57,4 @@ jobs:
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: 'us-west-1' # or your preferred region
+        AWS_REGION: 'us-west-1'
