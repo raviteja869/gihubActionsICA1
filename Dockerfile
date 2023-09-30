@@ -7,5 +7,5 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["python", "regression_project/tests/main.py"]
+CMD ["python", "main.py"]
 
