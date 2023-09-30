@@ -55,7 +55,7 @@ jobs:
             HTTP_PORT=5000
 
       - name: Deploy to Cloud Run
-        uses: google-github-actions/deploy-cloudrun@main
+        uses: google-github-actions/deploy-cloudrun@v1  # Updated to use version v1 instead of main
         with:
           image: gcr.io/${{ secrets.GCP_PROJECT_ID }}/python-app:latest
           service: python-app
