@@ -79,5 +79,5 @@ jobs:
 
     - name: Deploy to Google Cloud Run
       run: |
-        gcloud run deploy YOUR_SERVICE_NAME --image gcr.io/YOUR_PROJECT_ID/YOUR_IMAGE_NAME --region YOUR_REGION --platform managed
+        gcloud run deploy PYTHON_REGRESSION_SERVICE --image gcr.io/python-regression-cicd-flow/PYTHON_REGRESSION_SERVICE_IMAGE --region us-central1 --platform managed
 
