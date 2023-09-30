@@ -1,90 +1,59 @@
-name: Python CI/CD Workflow to Google Cloud Run
+name: "Deploy to Google Cloud Run"
 
-on: [push]
-
+on:
+  push:
+    branches:
+      - main
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-
-    - name: Build project
-      run: python setup.py build > build.log
-
-    - name: Archive build logs
-      uses: actions/upload-artifact@v2
-      with:
-        name: build-logs
-        path: build.log
-
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-
-    - name: Run tests
-      run: pytest
-
-    - name: Generate code coverage report
-      run: pytest --cov=./ --cov-report=xml
-
-    - name: Archive test results
-      run: pytest --junitxml=test_results.xml
-
-    - name: Archive code coverage report
-      uses: actions/upload-artifact@v2
-      with:
-        name: code-coverage
-        path: coverage.xml
-
   deploy:
-    needs: test
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: installing python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+      - name: update pip
+        run: python -m pip install --upgrade pip
+      - name: Installing all our dependencies
+        run: pip install numpy tensorflow flask pytest pytest-cov
+      - name: Test with pytest
+        run: pytest test_regression_project.py --doctest-modules --junitxml=junit/test-results-${{ github.run_number }}.xml
+      - name: Upload pytest test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: pytest-results-${{ github.run_number }}
+          path: |
+                junit/test-results-${{ github.run_number }}.xml
+                htmlcov/*.html                
+                htmlcov/*.js                
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID}}
+          service_account_key: ${{ secrets.GCP_SA_KEY}}
+          export_default_credentials: true
 
-    - name: Setup Google Cloud SDK
-      uses: google-github-actions/setup-gcloud@master
-      with:
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
-        service_account_key: ${{ secrets.GCP_SA_KEY }}
-        export_default_credentials: true
-    - name: Build Docker image
-      run: docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/python_app_image:latest .
+      - name: Configure docker for GCP
+        run: gcloud auth configure-docker
 
-    - name: Push Docker image to Google Container Registry
-      run: |
-        gcloud auth configure-docker
-        docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/python_app_image:latest
-
-    - name: Deploy to Google Cloud Run
-      run: |
-        gcloud run deploy python-app --image gcr.io/python-regression-cicd-flow/python-app_image --region us-central1 --platform managed
-
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: gcr.io/${{ secrets.GCP_PROJECT_ID }}/python-app:latest
+          build-args: |
+            HTTP_PORT=5000
+      - name: Deploy to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@main
+        with:
+          image: gcr.io/${{ secrets.GCP_PROJECT_ID }}/python-app:latest
+          service: python-app
+          region: us-central1
+          platform: managed
+          allow-unauthenticated: true
+          env_vars: |
+            FOO=bar
+            ZIP=zap
