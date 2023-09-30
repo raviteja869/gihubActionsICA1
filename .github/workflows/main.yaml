@@ -43,15 +43,15 @@ jobs:
         with:
           context: .
           push: true
-          tags: gcr.io/${{ secrets.GCP_PROJECT }}/app1:latest
+          tags: gcr.io/${{ secrets.GCP_PROJECT }}/python-app:latest
           build-args: |
             HTTP_PORT=5000
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@main
         with:
-          image: gcr.io/${{ secrets.GCP_PROJECT }}/app1:latest
-          service: app1
-          region: us-west2
+          image: gcr.io/${{ secrets.GCP_PROJECT }}/python-app:latest
+          service: python-app
+          region: us-central1
           platform: managed
           allow-unauthenticated: true
           env_vars: |
