@@ -19,7 +19,7 @@ jobs:
       - name: Installing all our dependencies
         run: pip install numpy tensorflow flask pytest pytest-cov
       - name: Test with pytest
-        run: pytest test_regression_project.py --doctest-modules --junitxml=junit/test-results-${{ github.run_number }}.xml
+        run: pytest src/tests/test_regression_project.py --doctest-modules --junitxml=junit/test-results-${{ github.run_number }}.xml
       - name: Upload pytest test results
         uses: actions/upload-artifact@v3
         with:
