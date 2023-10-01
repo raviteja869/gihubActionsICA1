@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/home/runner/work/gihubActionsICA1/gihubActionsICA1/regression_project')
+sys.path.append('/home/runner/work/gihubActionsICA1/gihubActionsICA1')
 
 import pytest
 import tensorflow as tf
