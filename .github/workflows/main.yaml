@@ -54,7 +54,7 @@ jobs:
           build-args: |
             HTTP_PORT=5000
 
-      - name: Deploy to Cloud Run
+      - name: Deploying to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v1
         with:
           image: gcr.io/${{ secrets.GCP_PROJECT }}/python-app:latest
